@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "Learn Greek Verbs",
+    "slug": "learn-greek-verbs",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "backgroundColor": "#DB9046",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "androidNavigationBar": {
+      "visible": "immersive",
+      "behavior": "overlay-swipe"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#DB9046",
+      "barStyle": "light-content"
+    },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#DB9046"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#DB9046"
+      },
+      "splash": {
+        "image": "./assets/splash-icon.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#DB9046"
+      },
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.pizzaboi.seagreekgame"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-audio"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e4169bd1-8cad-47e0-913a-5e2560f4d183"
+      }
+    }
+  }
+}
