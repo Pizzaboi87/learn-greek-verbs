@@ -79,6 +79,3 @@ index.ts – entry point for the app
 ##### 🙌 Contributing
 
 Feedback, ideas, and pull requests are welcome. If you spot a bug or have a feature suggestion, feel free to open an issue.
-
-# learn-greek-verbs
-# learn-greek-verbs
