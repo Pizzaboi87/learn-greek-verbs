@@ -1,18 +1,18 @@
-import ShipImage from '../assets/ship.png';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp
-} from 'react-native-responsive-screen';
 import {
     Animated,
     Dimensions,
     StyleSheet,
     View,
     Text,
-    TouchableOpacity,
+    GestureResponderEvent,
     ImageBackground,
 } from 'react-native';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import ShipImage from '../assets/ship.png';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -20,8 +20,8 @@ const BASE_SHIP_WIDTH = wp(50);
 const SHIP_HEIGHT = hp(20);
 const WAVE_HEIGHT = hp(5);
 const LANES = 3;
-
 const SHIP_SPEED = 100;
+
 const PATTERN_ROWS = [
     '-   -   -   -  -   - ',
     ' -  -  -  -   -  - - ',
@@ -31,11 +31,9 @@ const PATTERN_LENGTH = PATTERN_ROWS[0].length;
 const PATTERN_INTERVAL = 1200;
 
 const CHAR_WIDTH = wp(7);
-const MIN_SHIP_WIDTH = BASE_SHIP_WIDTH;
 const PADDING = hp(10);
-
 const getShipWidth = (form: string) =>
-    Math.max(MIN_SHIP_WIDTH, form.length * CHAR_WIDTH + PADDING);
+    Math.max(BASE_SHIP_WIDTH, form.length * CHAR_WIDTH + PADDING);
 
 interface ShipInstance {
     id: number;
@@ -43,13 +41,13 @@ interface ShipInstance {
     y: number;
     form: string;
     lane: number;
+    dismissed?: boolean;
 }
-
 let shipIdCounter = 0;
 
 interface Props {
-    onShipPress: (form: string) => void;
     conjugations: string[];
+    onShipPress: (form: string) => void;
 }
 
 export default function AnimatedShips({
@@ -57,15 +55,12 @@ export default function AnimatedShips({
     onShipPress,
 }: Props) {
     const [ships, setShips] = useState<ShipInstance[]>([]);
-    const shipsRef = useRef<ShipInstance[]>([]);
-    useEffect(() => {
-        shipsRef.current = ships;
-    }, [ships]);
 
-    const uniqueForms = useMemo(() => {
-        return Array.from(new Set(conjugations));
-    }, [conjugations]);
-
+    // Spawn ships by pattern
+    const uniqueForms = useMemo(
+        () => Array.from(new Set(conjugations)),
+        [conjugations]
+    );
     const formIndexRef = useRef(0);
     const patternStepRef = useRef(0);
 
@@ -81,8 +76,8 @@ export default function AnimatedShips({
 
         const id = shipIdCounter++;
         const animX = new Animated.Value(SCREEN_WIDTH);
-        const newShip: ShipInstance = { id, animX, y, form, lane };
-        setShips((prev) => [...prev, newShip]);
+        const newShip: ShipInstance = { id, animX, y, form, lane, dismissed: false };
+        setShips(prev => [...prev, newShip]);
 
         Animated.timing(animX, {
             toValue: -width,
@@ -90,7 +85,7 @@ export default function AnimatedShips({
             useNativeDriver: true,
         }).start(() => {
             setTimeout(() => {
-                setShips((prev) => prev.filter((s) => s.id !== id));
+                setShips(prev => prev.filter(s => s.id !== id));
             }, 0);
         });
     };
@@ -101,24 +96,35 @@ export default function AnimatedShips({
             if (PATTERN_ROWS[lane][step] === '-') {
                 const form = uniqueForms[formIndexRef.current];
                 spawnShip(lane, form);
-                formIndexRef.current =
-                    (formIndexRef.current + 1) % uniqueForms.length;
+                formIndexRef.current = (formIndexRef.current + 1) % uniqueForms.length;
             }
         }
         patternStepRef.current = (step + 1) % PATTERN_LENGTH;
     };
 
     useEffect(() => {
-        const interval = setInterval(
-            spawnShipInPatternIndex,
-            PATTERN_INTERVAL
-        );
+        const interval = setInterval(spawnShipInPatternIndex, PATTERN_INTERVAL);
         return () => clearInterval(interval);
     }, [uniqueForms]);
 
+    // Ontouch will be remove the current ship
+    const handleResponderRelease = (
+        ship: ShipInstance,
+        e: GestureResponderEvent
+    ) => {
+        onShipPress(ship.form);
+
+        setShips(prev =>
+            prev.map(s =>
+                s.id === ship.id ? { ...s, dismissed: true } : s
+            )
+        );
+    };
+
     return (
         <View style={StyleSheet.absoluteFill}>
-            {ships.map((ship) => {
+            {ships.map(ship => {
+                if (ship.dismissed) return null;
                 const width = getShipWidth(ship.form);
                 return (
                     <Animated.View
@@ -129,28 +135,25 @@ export default function AnimatedShips({
                             transform: [{ translateX: ship.animX }],
                             width,
                             height: SHIP_HEIGHT,
+                            zIndex: 10,
                         }}
+                        onStartShouldSetResponder={() => true}
+                        onResponderRelease={e => handleResponderRelease(ship, e)}
                     >
-                        <TouchableOpacity
-                            style={styles.touchable}
-                            activeOpacity={0.7}
-                            onPress={() => onShipPress(ship.form)}
+                        <ImageBackground
+                            source={ShipImage}
+                            style={{
+                                width,
+                                height: SHIP_HEIGHT,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                            resizeMode="stretch"
                         >
-                            <ImageBackground
-                                source={ShipImage}
-                                style={{
-                                    width,
-                                    height: SHIP_HEIGHT,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                                resizeMode="stretch"
-                            >
-                                <View style={styles.textOverlay}>
-                                    <Text style={styles.shipText}>{ship.form}</Text>
-                                </View>
-                            </ImageBackground>
-                        </TouchableOpacity>
+                            <View style={styles.textOverlay} pointerEvents="none">
+                                <Text style={styles.shipText}>{ship.form}</Text>
+                            </View>
+                        </ImageBackground>
                     </Animated.View>
                 );
             })}
@@ -159,10 +162,6 @@ export default function AnimatedShips({
 }
 
 const styles = StyleSheet.create({
-    touchable: {
-        width: '100%',
-        height: '100%'
-    },
     textOverlay: {
         position: 'absolute',
         backgroundColor: '#251f20',

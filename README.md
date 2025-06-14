@@ -1,10 +1,10 @@
-#### 🇬🇷 Learn Greek Verbs
+### 🇬🇷 Learn Greek Verbs
 
 Learn Greek Verbs is a playful mobile application designed to help beginners practice Modern Greek verb conjugation. Whether you're just starting out or want a light and visual way to reinforce your knowledge, this app offers a simple and engaging way to drill Greek tenses and forms.
 
-##### 🚀 How It Works
+#### 🚀 How It Works
 
-###### Choose a Tense
+##### Choose a Tense
 
 Currently, the game supports four tenses:
 
@@ -13,15 +13,15 @@ Currently, the game supports four tenses:
 - Imperfect
 - Future
 
-###### Pick a Verb
+##### Pick a Verb
 
 Each verb includes six conjugated forms, one for each personal pronoun.
 
-###### Play the Game
+##### Play the Game
 
 You will be shown a random pronoun (like εγώ, εσύ, αυτοί, etc.). Your task is to find the correct verb form from several sails on the screen. Tap the right sail — if you miss, try again!
 
-##### 🎮 Features
+#### 🎮 Features
 
 - Beginner-friendly vocabulary and grammar
 - Visual, tap-based gameplay
@@ -29,11 +29,11 @@ You will be shown a random pronoun (like εγώ, εσύ, αυτοί, etc.). Your
 - Works offline, no internet connection required
 - Built-in font support for consistent styling
 
-##### 🛠️ Tech Stack
+#### 🛠️ Tech Stack
 
 This project is built using Expo and React Native.
 
-##### Key technologies and packages include:
+#### Key technologies and packages include:
 
 - React 19
 - React Native 0.79
@@ -44,7 +44,7 @@ This project is built using Expo and React Native.
 - react-native-svg + svg-transformer – to display sail graphics
 - react-native-responsive-screen – responsive layout helpers
 
-##### 📦 Installation & Running Locally
+#### 📦 Installation & Running Locally
 
 ```bash
 git clone https://github.com/<your-username>/learn-greek-verbs.git
@@ -57,18 +57,17 @@ Then choose a platform in the Expo CLI:
 
 ```
 Press a to open in Android emulator or device
-Press i to open in iOS simulator (Mac only)
 Press w to open in browser
 ```
 
-##### 📁 Project Structure
+#### 📁 Project Structure
 
 app.json – Expo configuration (UI style, splash, icons, permissions, etc.)
 package.json – dependencies and scripts
 assets/ – icons, splash screens, fonts
 index.ts – entry point for the app
 
-##### 📸 Screenshots
+#### 📸 Screenshots
 
 <p align="center">
   <img src="screenshot_1.png" height="400" style="margin-right: 20px;" />
@@ -76,6 +75,6 @@ index.ts – entry point for the app
   <img src="screenshot_3.png" height="400" />
 </p>
 
-##### 🙌 Contributing
+#### 🙌 Contributing
 
 Feedback, ideas, and pull requests are welcome. If you spot a bug or have a feature suggestion, feel free to open an issue.

@@ -9,6 +9,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    InteractionManager,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -30,7 +31,7 @@ export default function GameScreen({ route, navigation }: Props) {
     const data = tense === 'present' ? presentData : simplePastData;
     const conjugationData = data[verbIndex];
 
-    const audioSource = require('../sound/music.mp3');
+    const audioSource = require('../assets/sound/music.mp3');
     const player = useAudioPlayer(audioSource);
     const status = useAudioPlayerStatus(player);
 
@@ -57,12 +58,16 @@ export default function GameScreen({ route, navigation }: Props) {
     const [lives, setLives] = useState(3);
 
     const handleShipPress = (form: string) => {
-        if (form === targetForm) {
-            setScore(s => s + 1);
-            setTargetIndex(prev => pickNextIndex(conjugationData.conjugations.length, prev));
-        } else {
-            setLives(l => l - 1);
-        }
+        InteractionManager.runAfterInteractions(() => {
+            if (form === targetForm) {
+                setScore((s) => s + 1);
+                setTargetIndex((prev) =>
+                    pickNextIndex(conjugationData.conjugations.length, prev)
+                );
+            } else {
+                setLives((l) => l - 1);
+            }
+        });
     };
 
     const isWin = score >= 20;
